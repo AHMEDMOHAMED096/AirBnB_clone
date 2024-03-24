@@ -17,24 +17,23 @@ class BaseModel:
             kwargs: Key-word arguments
         """
 
-        if not kwargs:
+        if kwargs:
+            for key in kwargs:
+                if key != "__class__":
+                    setattr(self, key, kwargs[key])
+
+            if "created_at" in kwargs:
+                self.created_at = datetime.strptime(
+                    kwargs["created_at"], "%Y-%m-%dT%H:%M:%S.%f")
+
+            if "updated_at" in kwargs:
+                self.updated_at = datetime.strptime(
+                    kwargs["updated_at"], "%Y-%m-%dT%H:%M:%S.%f")
+        else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             storage.new(self)
-
-        else:
-            for key, value in kwargs.items():
-                if key == "__class__":
-                    continue
-
-                elif key == "created_at" or key == "updated_at":
-                    date_object = datetime.strptime
-                    (value, "%Y-%m-%dT%H:%M:%S.%f")
-
-                    setattr(self, key, date_object)
-                else:
-                    setattr(self, key, value)
 
     def __str__(self):
         """
@@ -53,12 +52,8 @@ class BaseModel:
 
     def to_dict(self):
         """This method returns the dictionary representation of an instance."""
-        dict = {
-            "id": self.id,
-            "__class__": self.__class__.__name__,
-        }
-        if hasattr(self, "created_at"):
-            dict["created_at"] = self.created_at.isoformat()
-        if hasattr(self, "updated_at"):
-            dict["updated_at"] = self.updated_at.isoformat()
+        dict = self.__dict__.copy()
+        dict["__class__"] = self.__class__.__name__
+        dict["created_at"] = dict["created_at"].isoformat()
+        dict["updated_at"] = dict["updated_at"].isoformat()
         return dict
