@@ -28,11 +28,16 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, line):
         """This methods triggers EOF to exit the program."""
+        print()
         return True
 
     def do_quit(self, line):
         """This methods uses 'quit' to exit the program."""
         return True
+
+    def emptyline(self):
+        """Handles empty lines."""
+        pass
 
     def do_create(self, line):
         """This method creates a new instance of BaseModel and
