@@ -104,16 +104,16 @@ class HBNBCommand(cmd.Cmd):
         all instances based or not on the class name."""
 
         args = line.split()
-        if len(args) <= 1:
+        if len(args) == 0:
             for value in storage._FileStorage__objects.values():
                 print(str(value))
 
-        elif args[1] not in self.classes.keys():
+        elif args[0] not in self.classes.keys():
             print("** class doesn't exist **")
 
         else:
             for key, value in storage._FileStorage__objects.items():
-                if key.split(".")[0] == args[1]:
+                if key.split(".")[0] == args[0]:
                     print(str(value))
 
     def do_update(self, line):
